@@ -1,6 +1,6 @@
 from flask import Flask, render_template
 
-dicionario ={
+dicionario = {
     1: {
         "nome": "Harry Potter",
         "raça": "Humano",
@@ -48,6 +48,9 @@ def teste():
 def mostraPersonagem(personagemId):
     return render_template('personagem.html', **dicionario[personagemId])
 
-app.run(debug = True)
+@app.route("/personagem_boot/<int:personagemId>")
+def mostraPersonagemBoot(personagemId):
+    return render_template('personagem_boot.html', **dicionario[personagemId])
 
+app.run(debug = True)
 
