@@ -1,3 +1,6 @@
+# Simulação de um banco de dados para o projeto de CRUD
+
+# Dicionário "personagens" é o repositório principal
 personagens = {
     1: {
         "nome": "Harry Potter",
@@ -33,18 +36,43 @@ personagens = {
     }
 }
 
+# Função que gera um novo id
 def gerarId():
     id = len(personagens) + 1
     return id
 
+# Função para criar um personagem no dicionário
 def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
     personagens[gerarId()] = {"nome": nome, "raca": raca, "casa": casa, "altura": altura, "nascimento": nascimento, "imagem": imagem}
 
+# Retorna um dicionário com todos os personagens
 def retornarPersonagens():
     return personagens
 
-print(retornarPersonagens())
+# Retorna um único personagem
+def retornarPersonagem(id:int):
+    if id in personagens.keys():
+        return personagens[id]
+    else:
+        return {}
 
-criarPersonagem("Amanda", "Humano", "Grifinória", 1.68, "03/01/1989", "")
+# Atualiza os dados de um personagem
+def atualizarPersonagem(id:int, dadosPersonagem:dict):
+    personagens[id] = dadosPersonagem
 
-print(retornarPersonagens())
+# Remove um personagem
+def removerPersonagem(id:int):
+    del personagens[id]
+
+# Testes das funções
+# print(retornarPersonagens())
+
+# criarPersonagem("Amanda", "Humano", "Grifinória", 1.68, "03/01/1989", "")
+
+# print(retornarPersonagem(5))
+
+# atualizarPersonagem(5, {'nome': 'Amanda Pardinho', 'raca': 'Humano', 'casa': 'Grifinória', 'altura': 1.68, 'nascimento': '03/01/1989', 'imagem': ''})
+
+# print(retornarPersonagem(5))
+# removerPersonagem(5)
+# print(retornarPersonagem(5))
