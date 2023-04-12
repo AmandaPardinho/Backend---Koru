@@ -16,7 +16,7 @@ personagens = {
         "casa": "Grifinória",
         "altura": 1.80,
         "nascimento": "01/03/1980",
-        "imagem": "https://upload.wikimedia.org/wikipedia/en/5/5e/Pon_Weasley_poster.jpg"
+        "imagem": "https://upload.wikimedia.org/wikipedia/en/5/5e/Ron_Weasley_poster.jpg"
     },
     3: {
         "nome": "Hermione Granger",
