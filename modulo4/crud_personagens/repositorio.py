@@ -1,3 +1,5 @@
+from datetime import datetime
+
 # Simulação de um banco de dados para o projeto de CRUD
 
 # Dicionário "personagens" é o repositório principal
@@ -36,6 +38,21 @@ personagens = {
     }
 }
 
+# Tratamento de datas => solução provisória antes de linkar com o banco de dados
+def tratar_iso_para_dmy(data:str):
+    if "-" in data:
+        data = datetime.strptime(data, '%Y-%m-%d')
+        return data.strftime('%d/%m/%Y')
+    else:
+        return data
+
+def tratar_dmy_para_iso(data:str):
+    if "/" in data:
+        data = datetime.strptime(data, '%d/%m/%Y')
+        return data.strftime('%Y-%m-%d')
+    else:
+        return data
+
 # Função que gera um novo id
 def gerarId():
     id = len(personagens) + 1
@@ -47,17 +64,21 @@ def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
 
 # Retorna um dicionário com todos os personagens
 def retornarPersonagens():
+    for id, personagem in personagens.items():
+        personagem["nascimento"] = tratar_dmy_para_iso(personagem["nascimento"])
     return personagens
 
 # Retorna um único personagem
 def retornarPersonagem(id:int):
     if id in personagens.keys():
+        personagens[id]["nascimento"] = tratar_dmy_para_iso(personagens[id]["nascimento"])
         return personagens[id]
     else:
         return {}
 
 # Atualiza os dados de um personagem
 def atualizarPersonagem(id:int, dadosPersonagem:dict):
+    dadosPersonagem['nascimento'] = tratar_iso_para_dmy(dadosPersonagem['nascimento'])
     personagens[id] = dadosPersonagem
 
 # Remove um personagem
