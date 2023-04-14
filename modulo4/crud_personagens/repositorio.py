@@ -65,7 +65,7 @@ def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
 # Retorna um dicionário com todos os personagens
 def retornarPersonagens():
     for id, personagem in personagens.items():
-        personagem["nascimento"] = tratar_dmy_para_iso(personagem["nascimento"])
+        personagem["nascimento"] = tratar_iso_para_dmy(personagem["nascimento"])
     return personagens
 
 # Retorna um único personagem
