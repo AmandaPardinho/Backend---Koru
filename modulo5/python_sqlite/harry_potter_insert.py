@@ -1,7 +1,14 @@
 import sqlite3
+import os
 
-#Conectar com o banco de dados
-conexao = sqlite3.connect('harry_potter_personagens.db')
+# Obtem o diretório atual do arquivo
+caminho = os.path.dirname(os.path.realpath(__file__))
+
+# Conectando o caminho do arquivo do banco de dados a partir do diretório atual
+caminho_bd = os.path.join(caminho, 'harry_potter_personagens.db')
+
+# Conectar com o banco de dados 
+conexao = sqlite3.connect(caminho_bd)
 
 # Criação dos dados para manipular no banco de dados
 nome = "Harry Potter"
