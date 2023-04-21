@@ -115,7 +115,17 @@ def atualizarPersonagem(id:int, nome, raca, casa, altura, nascimento, imagem):
     
 # Remove um personagem
 def removerPersonagem(id:int):
-    del personagens[id]
+    try:
+        conn = sqlite3.connect(caminho_bd)
+        cursor = conn.cursor()
+        sql_delete = "DELETE FROM personagens WHERE id_personagem = ?"
+        cursor.execute(sql_delete, (id, ))
+        conn.commit()
+        conn.close()
+        return True
+    except Exception as ex:
+        print(ex)
+        return False
 
 # Testes das funções
 # print(retornarPersonagens())
