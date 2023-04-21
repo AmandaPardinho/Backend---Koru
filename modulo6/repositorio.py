@@ -91,7 +91,7 @@ def retornarPersonagens():
         cursor = conn.cursor()
         sql_select = "SELECT * FROM personagens"
         cursor.execute(sql_select)
-        personagens = cursor.fetchall()
+        personagens = cursor.fetchall() # Retorna uma lista
         return personagens
     except:
         return False
