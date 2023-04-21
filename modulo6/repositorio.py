@@ -141,15 +141,28 @@ def removerPersonagem(id:int):
         print(ex)
         return False
 
-# Testes das funções
-# print(retornarPersonagens())
+'''
+TESTE DAS FUNÇÕES ATUALIZADAS
 
-# criarPersonagem("Amanda", "Humano", "Grifinória", 1.68, "03/01/1989", "")
+nome = "Harry Potter"
+raca = "Humano"
+casa = "Grifinória"
+altura = 1.80
+nascimento = "31/07/1980"
+imagem = "https://upload.wikimedia.org/wikipedia/commons/9/97/Harry_Potter.jpg"
 
-# print(retornarPersonagem(5))
+id = criarPersonagem(nome, raca, casa, altura, nascimento, imagem)
+print(id)
+print(retornarPersonagem(id))
 
-# atualizarPersonagem(5, {'nome': 'Amanda Pardinho', 'raca': 'Humano', 'casa': 'Grifinória', 'altura': 1.68, 'nascimento': '03/01/1989', 'imagem': ''})
+id, nome, raca, casa, altura, nascimento, imagem = retornarPersonagem(id)
+atualizarPersonagem(id, "Harry James Potter", raca, casa, altura, nascimento, imagem)
+print(retornarPersonagem(id))
+id, nome, raca, casa, altura, nascimento, imagem = retornarPersonagem(id) 
 
-# print(retornarPersonagem(5))
-# removerPersonagem(5)
-# print(retornarPersonagem(5))
+print(retornarPersonagens())
+
+removerPersonagem(id) 
+
+print(retornarPersonagens())
+'''
