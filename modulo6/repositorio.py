@@ -86,9 +86,15 @@ def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
 
 # Retorna um dicionário com todos os personagens
 def retornarPersonagens():
-    for id, personagem in personagens.items():
-        personagem["nascimento"] = tratar_iso_para_dmy(personagem["nascimento"])
-    return personagens
+    try:
+        conn = sqlite3.connect(caminho_bd)
+        cursor = conn.cursor()
+        sql_select = "SELECT * FROM personagens"
+        cursor.execute(sql_select)
+        personagens = cursor.fetchall()
+        return personagens
+    except:
+        return False
 
 # Retorna um único personagem
 def retornarPersonagem(id:int):
