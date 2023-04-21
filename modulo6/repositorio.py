@@ -1,5 +1,6 @@
 from datetime import datetime
 import sqlite3
+import os
 
 # Simulação de um banco de dados para o projeto de CRUD
 
@@ -53,10 +54,16 @@ def tratar_dmy_para_iso(data:str):
         return data.strftime('%Y-%m-%d')
     else:
         return data
+    
+# Obtém o diretório atual do arquivo
+caminho = os.path.dirname(os.path.realpath(__file__))
+
+# Conectando o caminho do arquivo do banco de dados a partir do diretório atual
+caminho_bd = os.path.join(caminho, 'harry_potter_personagens.db')
 
 # Função que gera um novo id
 def gerarId():
-    conn = sqlite3.connect("harry_potter_personagens.db")
+    conn = sqlite3.connect(caminho_bd)
     cursor = conn.cursor()
     cursor.execute("SELECT seq FROM sqlite_sequence WHERE name = 'personagens'")
     next_id = cursor.fetchone()[0]
@@ -65,7 +72,7 @@ def gerarId():
 # Função para criar um personagem no dicionário
 def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
     try:
-        conn = sqlite3.connect("harry_potter_personagens.db")
+        conn = sqlite3.connect(caminho_bd)
         cursor = conn.cursor()
         sql_insert = "INSERT INTO personagens (nome_personagem, raca_personagem, casa_personagem, altura_personagem, nascimento_personagem, imagem_personagem) VALUES (?, ?, ?, ?, ?, ?)"
         cursor.execute(sql_insert, (nome, raca, casa, altura, nascimento, imagem))
@@ -94,7 +101,7 @@ def retornarPersonagem(id:int):
 # Atualiza os dados de um personagem
 def atualizarPersonagem(id:int, dadosPersonagem:dict):
     try:
-        conn = sqlite3.connect("harry_potter_personagens.db")
+        conn = sqlite3.connect(caminho_bd)
         cursor = conn.cursor()
         sql_insert = "UPDATE personagens (nome_personagem, raca_personagem, casa_personagem, altura_personagem, nascimento_personagem, imagem_personagem) VALUES (?, ?, ?, ?, ?, ?)"
         cursor.execute(sql_insert, (nome, raca, casa, altura, nascimento, imagem))
