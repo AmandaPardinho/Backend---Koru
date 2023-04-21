@@ -76,11 +76,11 @@ def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
         cursor = conn.cursor()
         sql_insert = "INSERT INTO personagens (nome_personagem, raca_personagem, casa_personagem, altura_personagem, nascimento_personagem, imagem_personagem) VALUES (?, ?, ?, ?, ?, ?)"
         cursor.execute(sql_insert, (nome, raca, casa, altura, nascimento, imagem))
-        personagem_id = cursor.lastrowid
+        personagem_id = cursor.lastrowid # lastrowid => função que pega o último id inserido após o último insert
         conn.commit()
         conn.close()
         return personagem_id
-    except Exception as ex: # caso aconteça uma exceção, a variável ex é criada => esta variável mostra detalhes do meu erro
+    except Exception as ex: # Caso aconteça uma exceção, a variável ex é criada => esta variável mostra detalhes do meu erro
         print(ex)
         return 0
 
@@ -99,19 +99,20 @@ def retornarPersonagem(id:int):
         return {}
 
 # Atualiza os dados de um personagem
-def atualizarPersonagem(id:int, dadosPersonagem:dict):
+def atualizarPersonagem(id:int, nome, raca, casa, altura, nascimento, imagem):
+    # try => tenta executar o pedaço do código contido nele e, caso não consiga, o bloco except é executado
     try:
         conn = sqlite3.connect(caminho_bd)
         cursor = conn.cursor()
-        sql_insert = "UPDATE personagens (nome_personagem, raca_personagem, casa_personagem, altura_personagem, nascimento_personagem, imagem_personagem) VALUES (?, ?, ?, ?, ?, ?)"
-        cursor.execute(sql_insert, (nome, raca, casa, altura, nascimento, imagem))
-        personagem_id = cursor.lastrowid
+        sql_update = "UPDATE personagens SET nome_personagem = ?, raca_personagem = ?, casa_personagem = ?, altura_personagem = ?, nascimento_personagem = ?, imagem_personagem = ? WHERE id_personagem = ?"
+        cursor.execute(sql_update, (nome, raca, casa, altura, nascimento, imagem, id))
         conn.commit()
         conn.close()
-        return personagem_id
+        return True
     except Exception as ex: # caso aconteça uma exceção, a variável ex é criada => esta variável mostra detalhes do meu erro
         print(ex)
-        return 0
+        return False
+    
 # Remove um personagem
 def removerPersonagem(id:int):
     del personagens[id]
