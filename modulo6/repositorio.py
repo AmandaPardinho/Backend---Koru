@@ -92,11 +92,19 @@ def retornarPersonagens():
 
 # Retorna um único personagem
 def retornarPersonagem(id:int):
-    if id in personagens.keys():
-        personagens[id]["nascimento"] = tratar_dmy_para_iso(personagens[id]["nascimento"])
-        return personagens[id]
-    else:
-        return {}
+    try:
+        if id == 0: # O id == 0 mostra que se quer criar um personagem novo
+            return gerarId(), "", "", "", "", "", ""
+        conn = sqlite3.connect(caminho_bd)
+        cursor = conn.cursor()
+
+        sql_select = "SELECT * FROM personagens WHERE id_personagem = ?"
+        cursor.execute(sql_select, (id, ))
+        id, nome, raca, casa, altura, nascimento, imagem = cursor.fetchone()
+        conn.close()
+        return id, nome, raca, casa, altura, nascimento, imagem
+    except:
+        return False
 
 # Atualiza os dados de um personagem
 def atualizarPersonagem(id:int, nome, raca, casa, altura, nascimento, imagem):
