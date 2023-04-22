@@ -1,41 +1,51 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, jsonify, request, redirect, url_for
 import repositorio
 
 app = Flask(__name__)
 
-@app.route("/")
-def home():
+# Rota para retornar todos os personagens
+@app.route("/personagens", methods=['GET'])
+def get_personagens():
     lista_personagens = repositorio.retornarPersonagens()
-    return render_template("index.html", dados = lista_personagens)
+    return jsonify(lista_personagens)
 
-# Rota para atualizar, excluir e salvar um novo personagem
-@app.route("/personagem/<int:id>", methods=['GET', 'POST'])
-def editar_personagem(id):
-
-    if request.method == "POST":
-        # Quer dizer que o usuário está mandando dados para o servidor
-        if "excluir" in request.form:
-            repositorio.removerPersonagem(id)
-            return redirect(url_for('home'))
-        elif "salvar" in request.form:
-            id = request.form["id"]
-            nome = request.form["nome"]
-            raca = request.form["raca"]
-            casa = request.form["casa"]
-            altura = request.form["altura"]
-            nascimento = request.form["nascimento"]
-            imagem = request.form["imagem"]
-
-            dados_retornados = repositorio.retornarPersonagem(id)
-            if dados_retornados:
-                repositorio.atualizarPersonagem(id = id, nome = nome, raca = raca, casa = casa, altura = altura, nascimento = nascimento, imagem = imagem)
-            else:
-                repositorio.criarPersonagem(nome = nome, raca = raca, casa = casa, altura = altura, nascimento = nascimento, imagem = imagem)
-
-            return redirect(url_for('home'))
+# Rota para retornar um único personagem
+@app.route("/personagem/<int:id>", methods=['GET'])
+def get_personagem(id):
+    personagem = repositorio.retornarPersonagem(id)
+    if personagem:
+        return jsonify(personagem)
     else:
-        # retorna os dados de um personagem na página de cadastro (método GET - botão adicionar)
-        id, nome, raca, casa, altura, nascimento, imagem = repositorio.retornarPersonagem(id)
-        return render_template("cadastro.html", id = id, nome = nome, raca = raca, casa = casa, altura = altura, nascimento = nascimento, imagem = imagem)
+        return jsonify({"message": "Personagem não encontrado!"}), 404
+
+# Rota para cadastrar um personagem    
+@app.route("/personagem", methods=['POST'])
+def post_personagem():
+    personagem = request.json
+    id_personagem = repositorio.criarPersonagem(**personagem)
+    personagem["id"] = id_personagem
+    return jsonify(personagem), 201
+
+# Rota para alterar um personagem
+@app.route("/personagem/<int:id>", methods=['PUT'])
+def put_personagem(id):
+    personagem = repositorio.retornarPersonagem(id)
+    if personagem:
+        dados_atualizados = request.json
+        dados_atualizados["id"] = id
+        repositorio.atualizarPersonagem(**dados_atualizados)
+        return (jsonify(dados_atualizados))
+    else:
+        return jsonify({"message": "Personagem não encontrado!"}), 404
+
+# Rota para deletar um personagem    
+@app.route("/personagem/<int:id>", methods=['DELETE'])
+def delete_personagem(id):
+    personagem = repositorio.retornarPersonagem(id)
+    if personagem:
+        repositorio.removerPersonagem(id) 
+        return jsonify({"message": "Personagem deletado com sucesso!"})
+    else:
+        return jsonify({"message": "Personagem não encontrado!"}), 404
 
 app.run(debug = True)
