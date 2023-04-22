@@ -87,12 +87,25 @@ def criarPersonagem(nome, raca, casa, altura, nascimento, imagem):
 # Retorna um dicionário com todos os personagens
 def retornarPersonagens():
     try:
+        resultado = []
         conn = sqlite3.connect(caminho_bd)
         cursor = conn.cursor()
         sql_select = "SELECT * FROM personagens"
         cursor.execute(sql_select)
         personagens = cursor.fetchall() # Retorna uma lista
-        return personagens
+        conn.close()
+        for item in personagens:
+            personagem = {
+                'id': item[0],
+                'nome': item[1],
+                'raca': item[2],
+                'casa': item[3],
+                'altura': item[4],
+                'nascimento': item[5],
+                'imagem': item[6]
+            }
+            resultado.append(personagem)
+        return resultado
     except:
         return False
 
@@ -108,7 +121,13 @@ def retornarPersonagem(id:int):
         cursor.execute(sql_select, (id, ))
         id, nome, raca, casa, altura, nascimento, imagem = cursor.fetchone()
         conn.close()
-        return id, nome, raca, casa, altura, nascimento, imagem
+        return {"id": id, 
+                "nome": nome, 
+                "raca": raca, 
+                "casa": casa, 
+                "altura": altura, 
+                "nascimento": nascimento, 
+                "imagem": imagem}
     except:
         return False
 
