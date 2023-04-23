@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from datetime import datetime
 from mentor import Mentor
 from mentorando import Mentorando
 from mentoria import Mentoria
@@ -8,6 +9,7 @@ app = Flask(__name__)
 
 db = DBConnector("mentorias.db")
 
+# ########## GET ##########
 # Retorna todos os mentores
 @app.route("/mentores", methods = ['GET'])
 def get_mentores():
@@ -52,5 +54,108 @@ def get_mentoria(id_mentoria):
         return jsonify(mentoria.to_dict())
     else:
         return jsonify({"error": "Mentoria não localizada"}), 404
+    
+# ########## POST ##########
+# Criar um único mentor
+@app.route("/mentores", methods = ['POST'])
+def create_mentor():
+    data = request.get_json()
+    mentor = Mentor(nome = data["nome"], linkedin = data["linkedin"])
+    mentor.save(db.connect())
+    return jsonify(mentor.to_dict())
+
+# Criar um único mentorando
+@app.route("/mentorandos", methods = ['POST'])
+def create_mentorando():
+    data = request.get_json()
+    mentorando = Mentorando(nome = data["nome"], linkedin = data["linkedin"])
+    mentorando.save(db.connect())
+    return jsonify(mentorando.to_dict())
+
+# Criar uma única mentoria
+@app.route("/mentorias", methods = ['POST'])
+def create_mentoria():
+    data = request.get_json()
+    mentor = Mentor.get_by_id(data['id_mentor'], db.connect())
+    mentorando = Mentorando.get_by_id(data['id_mentorando'], db.connect())
+    data_mentoria = datetime.fromisoformat(data["data_mentoria"])
+    mentoria = Mentoria(mentor = mentor, mentorando = mentorando, data = data_mentoria)
+    mentoria.save(db.connect())
+    return jsonify(mentoria.to_dict())
+
+# ########## PUT ########## 
+# Atualizar um único mentor
+@app.route("/mentores/<int:id_mentor>", methods = ['PUT'])
+def update_mentor(id_mentor):
+    data = request.get_json()
+    mentor = Mentor.get_by_id(id_mentor, db.connect())
+    if mentor:
+        mentor.nome = data['nome']
+        mentor.linkedin = data['linkedin']
+        mentor.save(db.connect())
+        return jsonify(mentor.to_dict())
+    else:
+        return jsonify({'error': "Mentor não encontrado"}), 404
+ 
+# Atualizar um único mentorando
+@app.route("/mentorandos/<int:id_mentorando>", methods = ['PUT'])
+def update_mentorando(id_mentorando):
+    data = request.get_json()
+    mentorando = Mentorando.get_by_id(id_mentorando, db.connect())
+    if mentorando:
+        mentorando.nome = data['nome']
+        mentorando.linkedin = data['linkedin']
+        mentorando.save(db.connect())
+        return jsonify(mentorando.to_dict())
+    else:
+        return jsonify({'error': "Mentorando não encontrado"}), 404
+
+# Atualizar uma única mentoria
+@app.route("/mentorias/<int:id_mentoria>", methods = ['PUT'])
+def update_mentoria(id_mentoria):
+    data = request.get_json()
+    mentoria = Mentoria.get_by_id(id_mentoria, db.connect())
+    if mentoria:
+        mentor = Mentor.get_by_id(data['id_mentor'], db.connect())
+        mentorando = Mentorando.get_by_id(data['id_mentorando'], db.connect())
+        data_mentoria = datetime.fromisoformat(data['data'])
+        mentoria.mentor = mentor
+        mentoria.mentorando = mentorando
+        mentoria.data = data_mentoria
+        mentoria.save(db.connect())
+        return jsonify(mentoria.to_dict())
+    else:
+        return jsonify({'error': "Mentoria não encontrada"}), 404
+
+# ########## DELETE ##########
+# Remover um único mentor
+@app.route("/mentores/<int:id_mentor>", methods = ['DELETE'])
+def delete_mentor(id_mentor):
+    mentor = Mentor.get_by_id(id_mentor, db.connect())
+    if mentor:
+        mentor.delete(db.connect())
+        return '', 204
+    else:
+        return jsonify({'error': "Mentor não encontrado"}), 404    
+
+# Remover um único mentorando
+@app.route("/mentorandos/<int:id_mentorando>", methods = ['DELETE'])
+def delete_mentorando(id_mentorando):
+    mentorando = Mentorando.get_by_id(id_mentorando, db.connect())
+    if mentorando:
+        mentorando.delete(db.connect())
+        return '', 204
+    else:
+        return jsonify({'error': "Mentorando não encontrado"}), 404
+ 
+# Remover uma única mentoria 
+@app.route("/mentorias/<int:id_mentoria>", methods = ['DELETE'])
+def delete_mentoria(id_mentoria):
+    mentoria = Mentoria.get_by_id(id_mentoria, db.connect())
+    if mentoria:
+        mentoria.delete(db.connect())
+        return '', 204
+    else:
+        return jsonify({'error': "Mentoria não encontrada"}), 404
 
 app.run(debug = True)
