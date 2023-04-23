@@ -33,6 +33,14 @@ class Mentoria:
         db_connection.commit()
         db_connection.close()
 
+    # Método que deleta mentorias
+    def delete(self, db: sqlite3.Connection):
+        query = "DELETE FROM mentorias WHERE id_mentoria = ?"
+        cursor = db.cursor()
+        cursor.execute(query, (self.id, ))
+        db.commit()
+        db.close()
+
     @staticmethod
     def get_by_id(id: int, db: sqlite3.Connection):
         query = "SELECT * FROM mentorias WHERE id_mentoria = ?"
@@ -45,14 +53,6 @@ class Mentoria:
             return Mentoria(id = result[0], mentor = mentor, mentorando = mentorando, data = result[3])
         else:
             return None
-        
-    # Método que deleta mentorando
-    def delete(self, db: sqlite3.Connection):
-        query = "DELETE FROM mentorias WHERE id_mentoria = ?"
-        cursor = db.cursor()
-        cursor.execute(query, (self.id, ))
-        cursor.commit()
-        cursor.close()
         
     @staticmethod
     def get_all(db: sqlite3.Connection):
