@@ -35,8 +35,8 @@ class Mentor:
         query = "DELETE FROM mentores WHERE id_mentor = ?"
         cursor = db.cursor()
         cursor.execute(query, (self.id, ))
-        cursor.commit()
-        cursor.close()
+        db.commit()
+        db.close()
 
     # Método estático => método que não necessita de um objeto criado (no caso, o objeto mentor) para ser usado
     @staticmethod
