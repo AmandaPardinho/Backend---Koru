@@ -29,3 +29,33 @@ class Mentor:
             db_connection.execute(query, (self.nome, self.linkedin, self.id))
         db_connection.commit()
         db_connection.close()
+
+    # Método que deleta mentor
+    def delete(self, db: sqlite3.Connection):
+        query = "DELETE FROM mentores WHERE id_mentor = ?"
+        cursor = db.cursor()
+        cursor.execute(query, (self.id, ))
+        cursor.commit()
+        cursor.close()
+
+    # Método estático => método que não necessita de um objeto criado (no caso, o objeto mentor) para ser usado
+    @staticmethod
+    def get_by_id(id: int, db: sqlite3.Connection):
+        query = "SELECT * FROM mentores WHERE id_mentor = ?"
+        cursor = db.cursor()
+        result = cursor.execute(query, (id, )).fetchone()
+        if result:
+            # Devolve um mentor inteiro
+            return Mentor(id = result[0], nome = result[1], linkedin = result[2])
+        else:
+            return None
+        
+    @staticmethod
+    def get_all(db: sqlite3.Connection):
+        query = "SELECT * FROM mentores"
+        cursor = db.cursor()
+        results = cursor.execute(query).fetchall()
+        mentors = []
+        for result in results:
+            mentors.append(Mentor(id = result[0], nome = result[1], linkedin = result[2]).to_dict())
+        return mentors
