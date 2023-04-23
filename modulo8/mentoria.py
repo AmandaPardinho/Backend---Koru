@@ -32,3 +32,36 @@ class Mentoria:
             cursor.execute(query, (self.mentor.id, self.mentorando.id, self.data, self.id))
         db_connection.commit()
         db_connection.close()
+
+    @staticmethod
+    def get_by_id(id: int, db: sqlite3.Connection):
+        query = "SELECT * FROM mentorias WHERE id_mentoria = ?"
+        cursor = db.cursor()
+        result = cursor.execute(query, (id, )).fetchone()
+        if result:
+            # Devolve um mentoria inteira
+            mentor = Mentor.get_by_id(result[1], db)
+            mentorando = Mentorando.get_by_id(result[2], db) 
+            return Mentoria(id = result[0], mentor = mentor, mentorando = mentorando, data = result[3])
+        else:
+            return None
+        
+    # Método que deleta mentorando
+    def delete(self, db: sqlite3.Connection):
+        query = "DELETE FROM mentorias WHERE id_mentoria = ?"
+        cursor = db.cursor()
+        cursor.execute(query, (self.id, ))
+        cursor.commit()
+        cursor.close()
+        
+    @staticmethod
+    def get_all(db: sqlite3.Connection):
+        query = "SELECT * FROM mentorias"
+        cursor = db.cursor()
+        results = cursor.execute(query).fetchall()
+        mentorias = []
+        for result in results:
+            mentor = Mentor.get_by_id(result[1], db)
+            mentorando = Mentorando.get_by_id(result[2], db)
+            mentorias.append(Mentoria(id = result[0], mentor = mentor, mentorando = mentorando, data = result[3]).to_dict())
+        return mentorias
